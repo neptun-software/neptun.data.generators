@@ -12,7 +12,7 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 INPUT_DIR="data/scraped-images.txt"
 GPT_MODEL = "gpt-3.5-turbo-0125"
-OUTPUT_PATH = "docker_compose_entries.jsonl"
+OUTPUT_PATH = "jsonl/docker_compose_entries.jsonl"
 
 def generate_docker_compose_entry(line):
     """Generate docker-compose.yml entry for a Docker image."""

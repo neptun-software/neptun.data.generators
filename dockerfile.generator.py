@@ -12,7 +12,7 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 INPUT_DIR="data/scraped-images.txt"
 GPT_MODEL = "gpt-3.5-turbo-0125"
-OUTPUT_PATH = "dockerfile_entries.jsonl"
+OUTPUT_PATH = "jsonl/dockerfile_entries.jsonl"
 
 def generate_dockerfile_entry(line):
     """Generate Dockerfile entry for a Docker image."""
