@@ -32,7 +32,7 @@ FAILURE_LOG_FILE = os.path.join(LOG_DIR, "failure.log")
 
 
 def log_to_file(file_path, content):
-    with open(file_path, "a") as f:
+    with open(file_path, "a", encoding="utf-8") as f:
         f.write(f"{content}\n")
 
 
@@ -83,12 +83,12 @@ def get_file_paths():
 
 
 def append_data(jsonl_entry: str):
-    with open(OUT_FILE, "a") as f:
+    with open(OUT_FILE, "a", encoding="utf-8") as f:
         f.write(jsonl_entry + "\n")
 
 
 def get_dockerfile_content(file_path):
-    with open(file_path, "r") as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
 
@@ -126,20 +126,20 @@ def build_jsonl_entry(user_query, dockerfile_content):
 
 
 def read_failure_paths():
-    with open("logs/failure.log", "r") as f:
+    with open("logs/failure.log", "r", encoding="utf-8") as f:
         return [data.strip() for data in f.readlines()]
 
 
 def read_success_paths():
-    with open(SUCCESS_LOG_FILE, "r") as f:
+    with open(SUCCESS_LOG_FILE, "r", encoding="utf-8") as f:
         return [data.strip() for data in f.readlines()]
 
 
 def clean_before_startup():
-    with open(SUCCESS_LOG_FILE, "w") as f:
+    with open(SUCCESS_LOG_FILE, "w", encoding="utf-8") as f:
         f.write("")
 
-    with open(FAILURE_LOG_FILE, "w") as f:
+    with open(FAILURE_LOG_FILE, "w", encoding="utf-8") as f:
         f.write("")
 
 
