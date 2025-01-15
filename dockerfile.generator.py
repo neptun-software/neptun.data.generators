@@ -158,7 +158,7 @@ def main():
                 logging.warning(f"Skipping invalid Dockerfile: {file_path}")
                 logger.increment_failure(file_path)
                 continue
-
+            
             dockerfile_content = get_dockerfile_content(file_path)
 
             prompt = f"""
