@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import dotenv
@@ -16,11 +17,11 @@ API_TOKEN = os.getenv("API_TOKEN")
 
 client = InferenceClient(token=API_TOKEN)
 TOP_P = 0.7
-TEMPERATURE = 0.5
+TEMPERATURE = 0.6
 MAX_TOKENS = 512
-MAX_RETRIES = 5  # Define the maximum number of retries for empty responses
+MAX_RETRIES = 3  # Define the maximum number of retries for empty responses
 MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-FILE_DIR = "dockerfiles/sources-gold"
+FILE_DIR = "/Users/stevanvlajic/Desktop/binnacle-icse2020-1.0.0/datasets/0b-deduplicated-dockerfile-sources/deduplicated-sources" #"dockerfiles/sources-gold"
 OUT_FILE = "data/dockerfiles.jsonl"
 LOG_DIR = "logs"
 
@@ -45,6 +46,8 @@ class Logger:
         self.success_count = 0
         self.failure_count = 0
         self.total_count = 0
+        log_to_file(SUCCESS_LOG_FILE, datetime.datetime.now())
+        log_to_file(FAILURE_LOG_FILE, datetime.datetime.now())
 
     def set_step(self, step_name):
         self.current_step = step_name
@@ -122,9 +125,32 @@ def build_jsonl_entry(user_query, dockerfile_content):
     return json.dumps(entry)
 
 
+def read_failure_paths():
+    with open("logs/failure.log", "r") as f:
+        return [data.strip() for data in f.readlines()]
+
+
+def read_success_paths():
+    with open(SUCCESS_LOG_FILE, "r") as f:
+        return [data.strip() for data in f.readlines()]
+
+
+def clean_before_startup():
+    with open(SUCCESS_LOG_FILE, "w") as f:
+        f.write("")
+
+    with open(FAILURE_LOG_FILE, "w") as f:
+        f.write("")
+
+
 def main():
+    prev_success_files = read_success_paths()
+    files_to_process = get_file_paths()
+    final_file_paths = [x for x in files_to_process if x not in prev_success_files]
+    logging.info(f"Fresh startup with...{len(final_file_paths)} Files to process and {len(prev_success_files)} finished entries successfully!")
+    clean_before_startup()
     try:
-        for file_path in get_file_paths():
+        for file_path in final_file_paths:
             logger.set_step(f"Processing file: {file_path}")
 
             parsed_commands = parse_and_validate_dockerfile(file_path)
